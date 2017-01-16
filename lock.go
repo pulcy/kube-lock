@@ -98,7 +98,7 @@ func (l *kubeLock) Acquire() error {
 			// Lock is owned by someone else
 			if time.Now().Before(lockData.ExpiresAt) {
 				// Lock is held and not expired
-				return maskAny(errgo.WithCausef(nil, AlreadyLockedError, "locked by %", lockData.Owner))
+				return maskAny(errgo.WithCausef(nil, AlreadyLockedError, "locked by %s", lockData.Owner))
 			}
 		}
 	}
@@ -136,7 +136,7 @@ func (l *kubeLock) Release() error {
 		}
 		if lockData.Owner != l.ownerID {
 			// Lock is owned by someone else
-			return maskAny(errgo.WithCausef(nil, NotLockedByMeError, "locked by %", lockData.Owner))
+			return maskAny(errgo.WithCausef(nil, NotLockedByMeError, "locked by %s", lockData.Owner))
 		}
 	} else if ok && lockDataRaw == "" {
 		// Lock is not locked, we consider that a successfull release also.

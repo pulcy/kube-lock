@@ -1,0 +1,29 @@
+apiVersion: extensions/v1beta1
+kind: ReplicaSet
+metadata:
+  name: kube-lock-example
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      tier: kube-lock-example
+    matchExpressions:
+      - {key: tier, operator: In, values: [kube-lock-example]}
+  template:
+    metadata:
+      labels:
+        app: kube-lock-example
+        tier: kube-lock-example
+    spec:
+      containers:
+      - name: example
+        image: pulcy/kube-lock-example
+        args:
+        - -namespace=$(MY_POD_NAMESPACE)
+        - -replicaSet=kube-lock-example
+        env:
+        - name: MY_POD_NAMESPACE
+          valueFrom:
+            fieldRef:
+              fieldPath: metadata.namespace
+        imagePullPolicy: Always
