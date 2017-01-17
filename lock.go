@@ -24,6 +24,10 @@ type KubeLock interface {
 	// If the lock is already held by us, the lock will be released.
 	// If successfull it returns nil, otherwise it returns an error.
 	Release() error
+
+	// CurrentOwner fetches the current owner ID of the lock.
+	// If the lock is not owner, "" is returned.
+	CurrentOwner() (string, error)
 }
 
 // NewKubeLock creates a new KubeLock.
