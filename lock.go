@@ -152,3 +152,25 @@ func (l *kubeLock) Release() error {
 	// Update successfull, we've released the lock
 	return nil
 }
+
+// CurrentOwner fetches the current owner ID of the lock.
+// If the lock is not owner, "" is returned.
+func (l *kubeLock) CurrentOwner() (string, error) {
+	// Get current state
+	ann, _, _, err := l.getMeta()
+	if err != nil {
+		return "", maskAny(err)
+	}
+
+	// Get lock data
+	if lockDataRaw, ok := ann[l.annotationKey]; ok && lockDataRaw != "" {
+		var lockData LockData
+		if err := json.Unmarshal([]byte(lockDataRaw), &lockData); err != nil {
+			return "", maskAny(err)
+		}
+		return lockData.Owner, nil
+	}
+
+	// No owner found
+	return "", nil
+}
