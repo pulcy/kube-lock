@@ -93,6 +93,9 @@ func (l *kubeLock) Acquire() error {
 	}
 
 	// Get lock data
+	if ann == nil {
+		ann = make(map[string]string)
+	}
 	if lockDataRaw, ok := ann[l.annotationKey]; ok && lockDataRaw != "" {
 		var lockData LockData
 		if err := json.Unmarshal([]byte(lockDataRaw), &lockData); err != nil {
@@ -133,6 +136,9 @@ func (l *kubeLock) Release() error {
 	}
 
 	// Get lock data
+	if ann == nil {
+		ann = make(map[string]string)
+	}
 	if lockDataRaw, ok := ann[l.annotationKey]; ok && lockDataRaw != "" {
 		var lockData LockData
 		if err := json.Unmarshal([]byte(lockDataRaw), &lockData); err != nil {

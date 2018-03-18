@@ -1,0 +1,22 @@
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  name: kube-lock-example-ericchiang
+spec:
+  replicas: 3
+  template:
+    metadata:
+      labels:
+        name: kube-lock-example-ericchiang
+    spec:
+      containers:
+      - name: example
+        imagePullPolicy: IfNotPresent
+        image: pulcy/kube-lock-example-ericchiang
+        args:
+          - -namespace=$(MY_POD_NAMESPACE)
+        env:
+        - name: MY_POD_NAMESPACE
+          valueFrom:
+            fieldRef:
+              fieldPath: metadata.namespace
